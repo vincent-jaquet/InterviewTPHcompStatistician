@@ -29,10 +29,12 @@ function(data, intervention, years){
   dat2 <- data %>% tidyr::pivot_longer(cols = c("none", "IRS", "ITN", "IRS.ITN"),
                                        names_to = "intervention", values_to = "PR")
 
-  return <- dat2 %>%
+  table <- dat2 %>%
     dplyr::filter(intervention == dplyr::sym(interventionS),
                   year %in% years) %>%
     dplyr::group_by(year) %>%
     dplyr::summarise(
       weighted_mean = stats::weighted.mean(PR, population), .groups = 'drop')
+
+  return(table)
 }
