@@ -19,22 +19,22 @@
 #' popmean(dat, intervention = ITN, years = 2020:2022)
 
 popmean <-
-function(data, intervention, years){
+  function(data, intervention, years){
 
-  year <- PR <- population <- NULL
+    year <- PR <- population <- NULL
 
-  interventionS <- dplyr::ensym(intervention)
+    intervention_quoted <- dplyr::ensym(intervention)
 
-  # Tranform dat into long format (like exercise 1)
-  dat2 <- data %>% tidyr::pivot_longer(cols = c("none", "IRS", "ITN", "IRS.ITN"),
-                                       names_to = "intervention", values_to = "PR")
+    # Tranform dat into long format (like exercise 1)
+    dat2 <- data %>% tidyr::pivot_longer(cols = c("none", "IRS", "ITN", "IRS.ITN"),
+                                         names_to = "intervention", values_to = "PR")
 
-  table <- dat2 %>%
-    dplyr::filter(intervention == dplyr::sym(interventionS),
-                  year %in% years) %>%
-    dplyr::group_by(year) %>%
-    dplyr::summarise(
-      weighted_mean = stats::weighted.mean(PR, population), .groups = 'drop')
+    results <- dat2 %>%
+      dplyr::filter(intervention == dplyr::sym(intervention_quoted),
+                    year %in% years) %>%
+      dplyr::group_by(year) %>%
+      dplyr::summarise(
+        weighted_mean = stats::weighted.mean(PR, population), .groups = 'drop')
 
-  return(table)
-}
+    return(results)
+  }
